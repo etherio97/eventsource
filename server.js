@@ -5,42 +5,18 @@ const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
+app.set('trust proxy', 1);
 
-let connectionId = 0;
-let connections = [];
+app.all('*', cors(),express.json(), express.urlencoded({ extended: true }), (req, res) => {
+  let ip = (req.headers['x-forwarded-for'] || '').split(',').pop().trim() || req.socket.remoteAddress;
 
-app.get('/connection', async (req, res) => {
-  let disconnect = false;
-  let id = ++connectionId;
-  
-  connections.push({
-    id,
-    ip: req.headers['x-forwarded-ip'],
-    at: new Date(),
-  });
-  
-  req.on('close', () => {
-    disconnect = true;
-    connections.splice(connections. findIndex(c => c.id === id), 1);
-  });
-  
-  res.setHeader('cache-control', 'no-store');
-  res.setHeader('content-type', 'text/event-stream');
-
-  while (!disconnect) {
-    res.send(`data: ${connections.length}\n\n`);
-    await sleep(1000);
-  }
-  
-  res.end();
-});
-
-app.get('/connections', (req, res) => {
   res.json({
-    connections,
-    totalCount: connections.length,
-  });
+    ip,
+    method: req.method,
+    path: req.originalUrl,
+    headers: req.headers,
+    body: req.body,
+  })
 });
 
 app.listen(PORT);
