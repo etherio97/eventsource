@@ -1,0 +1,16 @@
+{
+  "name": "event-source",
+  "description": "",
+  "version": "0.1.0",
+  "main": "server.js",
+  "private": true,
+  "license": "ISC",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.3"
+  }
+}
