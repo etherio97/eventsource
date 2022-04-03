@@ -20,7 +20,7 @@ app.get('/connection', async (req, res) => {
     at: new Date(),
   });
   
-  req.on('disconnect', () => {
+  req.on('close', () => {
     disconnect = true;
     connections.splice(connections. findIndex(c => c.id === id), 1);
   });
