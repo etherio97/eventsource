@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "(/.*)",
+      "source": "/",
+      "destination": "https://ethereal-eventsource.herokuapp.com"
+    },
+    {
+      "source": "/(.*)",
       "destination": "https://ethereal-eventsource.herokuapp.com$1"
     }  
   ]
