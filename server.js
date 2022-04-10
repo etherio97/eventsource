@@ -5,7 +5,6 @@ const {
   MAIL_PASSWORD,
   MAIL_FROM_NAME,
   MAIL_FROM_ADDRESS,
-  PUBLIC_DIR,
   PRIVATE_DIR,
 } = require('./config');
 const { v4: uuid } = require('uuid');
@@ -31,16 +30,60 @@ const transporter = mailer.createTransport(
 
 app.set('trust proxy', 1);
 
-app.use(
-  cors(),
-  express.json(),
-  express.urlencoded({ extended: true }),
-  express.static(PUBLIC_DIR)
-);
+app.use(cors(), express.json(), express.urlencoded({ extended: true }));
+
+app.get('/sendOTP', async (req, res) => {
+  let { to, name } = req.body;
+  if (!to || !name) {
+    return res.status(400).json({ error: 'Bad Request' });
+  }
+  let verificationCode = '';
+  for (let i = 0; i < 6; i++) {
+    verificationCode += Math.floor(Math.random() * 10).toString();
+  }
+  const text = `A sign in attempt requires further verification because we did not recognize your device. To complete the sign in, enter the verification code on the unrecognized device.
+
+Verification Code: ${verificationCode}
+
+If you did not attempt to sign in to your account, your password may be compromised. Visit https://www.etherio.fun/account/reset-password to reset your password.  
+
+If you didn't request this email, there's nothing to worry about -- you can safely ignore it.
+
+Thanks,
+Ethereal Tech`;
+
+  const html = await ejs.renderFile(
+    PRIVATE_DIR + '/template/account-code.ejs',
+    {
+      name,
+      email: to,
+      verificationCode,
+      year: new Date().getFullYear(),
+    }
+  );
+  let mail = {
+    from: MAIL_FROM_NAME + '<' + MAIL_FROM_ADDRESS + '>',
+    to,
+    subject: 'Please verify your device',
+    html,
+    text,
+  };
+  transporter.sendMail(mail, (err, result) => {
+    if (err) {
+      return res.json({
+        error: err,
+      });
+    }
+    return res.json({
+      result,
+    });
+  });
+});
 
 app.get('/verify', (req, res) => {
   let { token } = req.query;
   if (!token) return res.status(400).json({ error: 'Bad request' });
+  res.send('verified!');
 });
 
 app.post('/verify', async (req, res) => {
