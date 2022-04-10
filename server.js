@@ -47,8 +47,6 @@ Verification Code: ${verificationCode}
 
 If you did not attempt to sign in to your account, your password may be compromised. Visit https://www.etherio.fun/account/reset-password to reset your password.  
 
-If you didn't request this email, there's nothing to worry about -- you can safely ignore it.
-
 Thanks,
 Ethereal Tech`;
 
