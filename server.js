@@ -32,7 +32,7 @@ app.set('trust proxy', 1);
 
 app.use(cors(), express.json(), express.urlencoded({ extended: true }));
 
-app.get('/sendOTP', async (req, res) => {
+app.post('/sendOTP', async (req, res) => {
   let { to, name } = req.body;
   if (!to || !name) {
     return res.status(400).json({ error: 'Bad Request' });
