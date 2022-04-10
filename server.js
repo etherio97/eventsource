@@ -18,9 +18,8 @@ const transporter = mailer.createTransport({
   host: MAIL_HOST,
   port: MAIL_PORT,
   secure: true,
-  tls: {
-    rejectUnauthorized: false,
-  },
+  debug: true,
+  authMethod: 'PLAIN',
   auth: {
     username: MAIL_USERNAME,
     password: MAIL_PASSWORD,
@@ -41,14 +40,14 @@ app.post('/sendMail', cors(), express.json(), express.urlencoded({ extended: tru
     html,
     text,
   };
-  transporter.sendMail(mail, (err, info) => {
+  transporter.sendMail(mail, (err, result) => {
     if (err) {
       return res.json({
         error: err,
       });
     }
     return res.json({
-      result: info,
+      result,
     });
   });
 });
