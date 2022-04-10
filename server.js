@@ -10,27 +10,26 @@ const {
 } = require('./config');
 
 const mailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const transporter = mailer.createTransport({
-  host: MAIL_HOST,
-  port: MAIL_PORT,
-  secure: true,
-  debug: true,
-  authMethod: 'PLAIN',
-  auth: {
-    username: MAIL_USERNAME,
-    password: MAIL_PASSWORD,
-  },
-});
+const transporter = mailer.createTransport(
+  smtpTransport({
+    service: 'yandex',
+    host: MAIL_HOST,
+    auth: {
+      user: MAIL_USERNAME,
+      pass: MAIL_PASSWORD,
+    },
+  }));
 
 app.set('trust proxy', 1);
 
 app.post('/sendMail', cors(), express.json(), express.urlencoded({ extended: true }), (req, res) => {
   let { to, cc, bbc, subject, text, html } = req.body;
-  if (!to || !subject || !(text||html)) return res.status(400).json({ error: 'Bad Request' });
+  if (!to || !subject || !(text || html)) return res.status(400).json({ error: 'Bad Request' });
   let mail = {
     from: MAIL_FROM_NAME + '<' + MAIL_FROM_ADDRESS + '>',
     to,
