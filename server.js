@@ -87,7 +87,6 @@ Yangon, Myanmar(Burma), MM.`;
       result,
     });
   });
-  res.status(204).end();
 });
 
 app.post('/sendMail', (req, res) => {
