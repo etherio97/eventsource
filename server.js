@@ -52,7 +52,7 @@ app.post('/verify', async (req, res) => {
   const link = 'verify?token=' + uuid();
   const text = `Verfiy Your Email Address
 
-Confirm that ${email} is your email address at:
+Confirm that ${to} is your email address at:
 \t  ${baseUrl}/${link}
 
 If you didn't request this email, there's nothing to worry about -- you can safely ignore it.
